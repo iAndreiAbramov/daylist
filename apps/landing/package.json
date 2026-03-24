@@ -6,7 +6,8 @@
     "dev": "next dev --port 3000",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "echo 'no tests'"
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.2.2",
