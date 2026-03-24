@@ -1,15 +1,6 @@
 export default function Home() {
   return (
-    <main
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: '100vh',
-        gap: '1rem',
-      }}
-    >
+    <main className="flex min-h-svh flex-col items-center justify-center gap-4">
       <h1>Daylist</h1>
       <p>Next.js web app is running.</p>
     </main>
