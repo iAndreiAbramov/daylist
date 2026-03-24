@@ -16,9 +16,16 @@ pnpm lint      # Lint all apps
 pnpm format    # Format all files with Prettier
 ```
 
-### Web app (`apps/web`)
+### Landing (`apps/landing`)
 ```bash
 pnpm dev       # Next.js dev server on port 3000
+pnpm build     # Production build
+pnpm lint      # ESLint
+```
+
+### App (`apps/app`)
+```bash
+pnpm dev       # Vite dev server on port 5173
 pnpm build     # Production build
 pnpm lint      # ESLint
 ```
@@ -37,14 +44,19 @@ pnpm lint          # ESLint with auto-fix
 ## Architecture
 
 ### Monorepo structure
-- `apps/web` — Next.js 15 frontend (App Router, `src/app/`)
+- `apps/landing` — Next.js 15 landing page (`daylist.com`, App Router, `src/app/`)
+- `apps/app` — Vite + React SPA (`app.daylist.com`)
 - `apps/api` — NestJS 10 backend
 - `packages/` — shared libraries (empty, ready for reuse)
 - `specs/` — project specifications
 
-### Frontend (`apps/web`)
+### Landing (`apps/landing`)
 - Next.js 15 with App Router (`src/app/`)
 - Path alias: `@/*` → `./src/*`
+- Tailwind CSS, TypeScript
+
+### App (`apps/app`)
+- Vite + React SPA
 - Planned: Tailwind CSS, shadcn/ui, Radix UI, Storybook, IndexedDB for offline storage
 
 ### Backend (`apps/api`)
