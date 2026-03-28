@@ -1,36 +1,45 @@
 # План разработки Daylist
 
-## Этап 1. Инфраструктура и окружение разработки
+## ✅ Этап 1. Инфраструктура и окружение разработки
 
 Настраиваем всё необходимое для локальной разработки до написания первой строки бизнес-логики.
 
 **Задачи:**
-1. Переименовать `apps/web` → `apps/landing`; создать `apps/app` на Vite + React
-2. Создать `docker-compose.yml` в корне: сервисы `postgres`, `api`, `app`, `landing`; тома для данных PostgreSQL
-3. Создать `.env.example` с переменными: `DATABASE_URL`, `JWT_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `PORT`
-4. Создать `Makefile` с командами: `make up`, `make down`, `make migrate`, `make migration:create NAME=...`, `make migration:revert`, `make db:reset`, `make seed`
-5. Настроить GitHub Actions: workflow `ci.yml` — lint + build + test для всех приложений при пуше в `main` и при открытии PR
-6. Добавить `.dockerignore` и `Dockerfile` для `api`, `app`, `landing`
-7. Настроить `turbo.json` pipeline: задать зависимости задач между приложениями
+
+1. ✅ Переименовать `apps/web` → `apps/landing`; создать `apps/app` на Vite + React
+2. ✅ Создать `docker-compose.yml` в корне: сервисы `postgres`, `api`, `app`, `landing`; тома для данных PostgreSQL
+3. ✅ Создать `.env.example` с переменными: `DATABASE_URL`, `JWT_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `PORT`
+4. ✅ Создать `Makefile` с командами: `make up`, `make down`, `make migrate`, `make migration:create NAME=...`, `make migration:revert`, `make db:reset`, `make seed`
+5. ✅ Настроить GitHub Actions: workflow `ci.yml` — lint + build + test для всех приложений при пуше в `main` и при открытии PR
+6. ✅ Добавить `.dockerignore` и `Dockerfile` для `api`, `app`, `landing`
+7. ✅ Настроить `turbo.json` pipeline: задать зависимости задач между приложениями
 
 ---
 
-## Этап 2. База данных и TypeORM
+## ✅ Этап 2. Общие типы, база данных и TypeORM
 
-Проектируем схему и подключаем ORM к NestJS.
+Создаём общий пакет с интерфейсами сущностей, проектируем схему и подключаем ORM к NestJS.
 
 **Задачи:**
-1. Установить зависимости в `apps/api`: `@nestjs/typeorm`, `typeorm`, `pg`, `@nestjs/config`
-2. Создать `DatabaseModule` с подключением через `TypeOrmModule.forRootAsync`, читающим `DATABASE_URL` из окружения
-3. Спроектировать и реализовать сущности (все имеют `id uuid`, `createdAt`, `updatedAt`):
-   - `User` — `id`, `email`, `passwordHash?`, `googleId?`, `createdAt`, `updatedAt`
-   - `Category` — `id`, `userId`, `name`, `type (task|note|finance)`, `position`, `createdAt`, `updatedAt`
-   - `Task` — `id`, `userId`, `categoryId`, `parentId?`, `title`, `completed`, `position`, `createdAt`, `updatedAt`
-   - `Note` — `id`, `userId`, `categoryId`, `title`, `content`, `taskId?`, `financeEntryId?`, `createdAt`, `updatedAt`
-   - `FinanceEntry` — `id`, `userId`, `categoryId`, `amount decimal(15,2)`, `type (income|expense)`, `description?`, `date`, `currency varchar(3)`, `createdAt`, `updatedAt`
-4. Настроить TypeORM migrations (не `synchronize: true`): папка `apps/api/src/migrations/`
-5. Создать первую миграцию `InitSchema` со всеми таблицами
-6. Написать `SeedService` для создания дефолтных категорий при регистрации пользователя
+
+1. ✅ Создать пакет `packages/common`:
+   - Инициализировать `package.json` с именем `@daylist/common`
+   - Настроить `tsconfig.json` (strict, `declaration: true`)
+   - Добавить пакет в зависимости `apps/api` и `apps/app` через workspace-ссылку
+2. ✅ Определить TypeScript-интерфейсы сущностей в `packages/common/types/entities` (все имеют `id: string`, `createdAt: Date`, `updatedAt: Date`):
+   - `IUser` — `id`, `email`, `passwordHash?`, `googleId?`, `createdAt`, `updatedAt`
+   - `ICategory` — `id`, `userId`, `name`, `type: 'task' | 'note' | 'finance'`, `position`, `createdAt`, `updatedAt`
+   - `ITask` — `id`, `userId`, `categoryId`, `parentId?`, `title`, `completed`, `position`, `createdAt`, `updatedAt`
+   - `INote` — `id`, `userId`, `categoryId`, `title`, `content`, `taskId?`, `financeEntryId?`, `createdAt`, `updatedAt`
+   - `IFinanceEntry` — `id`, `userId`, `categoryId`, `amount: number`, `type: 'income' | 'expense'`, `description?`, `date: Date`, `currency: string`, `createdAt`, `updatedAt`
+   - Экспортировать всё через `packages/common/index.ts`
+3. ✅ Установить зависимости в `apps/api`: `@nestjs/typeorm`, `typeorm`, `pg`, `@nestjs/config`
+4. ✅ Создать `DatabaseModule` с подключением через `TypeOrmModule.forRootAsync`, читающим `DATABASE_URL` из окружения
+5. ✅ Реализовать TypeORM-сущности в `apps/api`, реализующие соответствующие интерфейсы из `@daylist/common`:
+   - `User implements IUser`, `Category implements ICategory`, `Task implements ITask`, `Note implements INote`, `FinanceEntry implements IFinanceEntry`
+6. ✅ Настроить TypeORM migrations (не `synchronize: true`): папка `apps/api/src/typeorm/migrations/`
+7. ✅ Создать первую миграцию `InitSchema` со всеми таблицами
+8. ✅ Написать `SeedService` для создания дефолтных категорий при регистрации пользователя
 
 ---
 
@@ -39,6 +48,7 @@
 Реализуем auth: email/пароль и Google OAuth, JWT-сессии.
 
 **Задачи:**
+
 1. Установить: `@nestjs/jwt`, `@nestjs/passport`, `passport`, `passport-local`, `passport-jwt`, `passport-google-oauth20`, `bcrypt`
 2. Создать `AuthModule` с эндпоинтами:
    - `POST /api/auth/register` — регистрация email/пароль
@@ -58,6 +68,7 @@
 Реализуем REST API для всех трёх доменов и для категорий.
 
 **Задачи:**
+
 1. Создать `CategoriesModule`: CRUD `/api/categories` (фильтрация по `type`), проверка владельца
 2. Создать `TasksModule`: CRUD `/api/tasks`, фильтрация по `categoryId` и `parentId`, endpoint для массового обновления `position`
 3. Создать `NotesModule`: CRUD `/api/notes`, фильтрация по `categoryId`, `taskId`, `financeEntryId`
@@ -74,6 +85,7 @@
 Создаём визуальную основу: цветовая схема, компоненты, адаптивная навигация.
 
 **Задачи:**
+
 1. Установить зависимости: `shadcn/ui` (init), `@radix-ui/*`, `clsx`, `tailwind-merge`, `lucide-react`
 2. Определить цветовую палитру в `globals.css` через CSS-переменные Tailwind: нейтральные средние тона (не светлые, не тёмные)
 3. Создать компонент `AppLayout` с адаптивным поведением:
@@ -91,6 +103,7 @@
 Связываем UI с API, управляем сессией на клиенте.
 
 **Задачи:**
+
 1. Установить: `axios` или `ky` для HTTP-клиента; `zustand` для глобального стора
 2. Создать `authStore` (Zustand): `user`, `token`, `isAuthenticated`, `login`, `logout`, `setUser`
 3. Реализовать страницы `/auth/login` и `/auth/register` с формами (shadcn `Form`, `react-hook-form`, `zod`)
@@ -106,8 +119,9 @@
 Приложение должно работать без интернета и аккаунта.
 
 **Задачи:**
+
 1. Установить `idb` (обёртка над IndexedDB)
-2. Создать `db.ts` — инициализация базы с object stores: `tasks`, `notes`, `financeEntries`, `categories`; схема хранит те же поля, что и API-сущности, плюс `syncStatus: 'synced' | 'pending' | 'deleted'`
+2. Создать `db.ts` — инициализация базы с object stores: `tasks`, `notes`, `financeEntries`, `categories`; локальные типы расширяют интерфейсы из `@daylist/common`, добавляя `syncStatus: 'synced' | 'pending' | 'deleted'`
 3. Создать сервисы для каждого домена (`TasksLocalService`, `NotesLocalService`, и т.д.) с методами: `getAll`, `getById`, `create`, `update`, `delete`; при записи генерировать `id` (uuid v4) на клиенте, проставлять `createdAt`/`updatedAt`, ставить `syncStatus = 'pending'`
 4. Создать Zustand-сторы для каждого домена, работающие поверх локальных сервисов: `useTasksStore`, `useNotesStore`, `useFinanceStore`
 5. Создать `SyncService` — при наличии токена и онлайн-соединения (`navigator.onLine`): отправляет pending-записи на сервер, получает обновления с сервера, разрешает конфликты по `updatedAt` (last write wins), обновляет `syncStatus`
@@ -121,6 +135,7 @@
 Полноценный интерфейс управления задачами с drag-and-drop.
 
 **Задачи:**
+
 1. Установить `@dnd-kit/core`, `@dnd-kit/sortable`, `@dnd-kit/utilities`
 2. Реализовать страницу `/tasks`:
    - Левая панель (или дропдаун на мобиле): список категорий с кнопкой добавления
@@ -139,6 +154,7 @@
 Простой список заметок с привязкой к задачам и финансам.
 
 **Задачи:**
+
 1. Реализовать страницу `/notes`:
    - Левая панель: список категорий
    - Основная область: список карточек заметок (заголовок + первые строки контента)
@@ -155,6 +171,7 @@
 Интерфейс ввода и просмотра финансовых записей.
 
 **Задачи:**
+
 1. Реализовать страницу `/finance`:
    - Фильтры: выбор периода (неделя / месяц / кастомный диапазон), фильтр по категории, фильтр по типу (доход/расход)
    - Список записей: дата, сумма (зелёный для дохода, красный для расхода), категория, описание
@@ -170,6 +187,7 @@
 Дашборд с графиками и метриками.
 
 **Задачи:**
+
 1. Установить `recharts` для графиков
 2. Создать страницу `/finance/analytics` с селектором периода
 3. Реализовать компоненты:
@@ -191,6 +209,7 @@
 Финальный этап: качество, надёжность, документация.
 
 **Задачи:**
+
 1. Написать e2e тесты для API: регистрация, логин, CRUD задач, синхронизация конфликтов
 2. Добавить обработку ошибок на фронте: глобальный error boundary, toast-уведомления для ошибок API и успешных операций
 3. Добавить состояния загрузки: skeleton-компоненты для списков задач, заметок, финансов

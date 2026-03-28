@@ -7,7 +7,12 @@
     "lint": "turbo lint",
     "test": "turbo test",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,mjs,json,md,astro}\"",
-    "prepare": "husky"
+    "prepare": "husky",
+    "migration:generate": "pnpm --filter api migration:generate",
+    "migration:run": "pnpm --filter api migration:run",
+    "migration:revert": "pnpm --filter api migration:revert",
+    "migration:create": "pnpm --filter api migration:create",
+    "migration:show": "pnpm --filter api migration:show"
   },
   "devDependencies": {
     "husky": "^9",

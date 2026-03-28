@@ -1,0 +1,38 @@
+{
+  "name": "@daylist/common",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "types/entities": [
+        "./dist/types/entities/index.d.ts"
+      ],
+      "enums": [
+        "./dist/enums/index.d.ts"
+      ]
+    }
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./types/entities": {
+      "types": "./dist/types/entities/index.d.ts",
+      "default": "./dist/types/entities/index.js"
+    },
+    "./enums": {
+      "types": "./dist/enums/index.d.ts",
+      "default": "./dist/enums/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch --preserveWatchOutput"
+  },
+  "devDependencies": {
+    "typescript": "^5.1.3"
+  }
+}

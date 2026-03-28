@@ -58,7 +58,7 @@ pnpm lint          # ESLint with auto-fix
 - `apps/landing` — Astro 5 landing page (`daylist.com`, static, `src/pages/`)
 - `apps/app` — Vite + React SPA (`app.daylist.com`)
 - `apps/api` — NestJS 10 backend
-- `packages/` — shared libraries (empty, ready for reuse)
+- `packages/common` — shared library `@daylist/common`: TypeScript interfaces for all entities (`IUser`, `ICategory`, `ITask`, `INote`, `IFinanceEntry`)
 - `specs/` — project specifications
 
 ### Landing (`apps/landing`)
@@ -77,7 +77,11 @@ pnpm lint          # ESLint with auto-fix
 
 - NestJS with Express, all routes prefixed `/api`, CORS enabled
 - Port: `PORT` env var or 3001
-- Planned: PostgreSQL + TypeORM
+- PostgreSQL + TypeORM configured (`DatabaseModule`, `synchronize: false`)
+- Entities: `User`, `Category`, `Task`, `Note`, `FinanceEntry` (implement interfaces from `@daylist/common`)
+- Migrations: `apps/api/src/typeorm/migrations/`, data-source: `apps/api/src/typeorm/data-source.ts`
+- `SeedService` seeds mock data (user, categories, tasks, notes, finance entries) on startup when `SEED_ENABLED=true`; idempotent — skips if seed user already exists
+- Config: `apps/api/.env.example`
 
 ### UI requirements
 
