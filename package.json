@@ -11,7 +11,8 @@
     "migration:generate": "pnpm --filter api migration:generate",
     "migration:run": "pnpm --filter api migration:run",
     "migration:revert": "pnpm --filter api migration:revert",
-    "migration:create": "pnpm --filter api migration:create"
+    "migration:create": "pnpm --filter api migration:create",
+    "migration:show": "pnpm --filter api migration:show"
   },
   "devDependencies": {
     "husky": "^9",

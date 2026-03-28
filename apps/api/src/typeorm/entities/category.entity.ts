@@ -6,9 +6,11 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Relation,
   UpdateDateColumn,
 } from 'typeorm';
-import type { CategoryType, ICategory } from '@daylist/common';
+import { CategoryTypeEnum } from '@daylist/common/enums';
+import type { ICategory } from '@daylist/common/types/entities';
 import { User } from './user.entity';
 
 @Entity('categories')
@@ -16,25 +18,24 @@ export class Category extends BaseEntity implements ICategory {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column()
+  @Column({ type: 'uuid' })
   userId!: string;
-
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
-  user!: User;
+  user!: Relation<User>;
 
   @Column()
   name!: string;
 
-  @Column({ type: 'enum', enum: ['task', 'note', 'finance'] })
-  type!: CategoryType;
+  @Column({ type: 'enum', enum: CategoryTypeEnum })
+  type!: CategoryTypeEnum;
 
   @Column({ type: 'int', default: 0 })
   position!: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt!: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt!: Date;
 }

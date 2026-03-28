@@ -13,11 +13,12 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "typeorm": "typeorm-ts-node-commonjs -d src/typeorm/data-source.ts",
+    "typeorm": "TS_NODE_PROJECT=tsconfig.typeorm.json typeorm-ts-node-commonjs -d src/typeorm/data-source.ts",
     "migration:run": "pnpm typeorm migration:run",
     "migration:revert": "pnpm typeorm migration:revert",
     "migration:generate": "pnpm typeorm migration:generate",
-    "migration:create": "typeorm migration:create"
+    "migration:create": "typeorm migration:create",
+    "migration:show": "pnpm typeorm migration:show"
   },
   "dependencies": {
     "@daylist/common": "workspace:*",

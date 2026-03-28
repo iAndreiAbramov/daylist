@@ -6,6 +6,7 @@ const schema = z.object({
     .enum(['true', 'false'], {
       message: 'SEED_ENABLED must be "true" or "false"',
     })
+    .default('false')
     .transform((v) => v === 'true'),
 });
 

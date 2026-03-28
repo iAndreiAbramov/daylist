@@ -80,7 +80,7 @@ pnpm lint          # ESLint with auto-fix
 - PostgreSQL + TypeORM configured (`DatabaseModule`, `synchronize: false`)
 - Entities: `User`, `Category`, `Task`, `Note`, `FinanceEntry` (implement interfaces from `@daylist/common`)
 - Migrations: `apps/api/src/typeorm/migrations/`, data-source: `apps/api/src/typeorm/data-source.ts`
-- `SeedService` creates default categories on user registration
+- `SeedService` seeds mock data (user, categories, tasks, notes, finance entries) on startup when `SEED_ENABLED=true`; idempotent — skips if seed user already exists
 - Config: `apps/api/.env.example`
 
 ### UI requirements

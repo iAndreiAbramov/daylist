@@ -4,10 +4,28 @@
   "private": true,
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "types/entities": [
+        "./dist/types/entities/index.d.ts"
+      ],
+      "enums": [
+        "./dist/enums/index.d.ts"
+      ]
+    }
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./types/entities": {
+      "types": "./dist/types/entities/index.d.ts",
+      "default": "./dist/types/entities/index.js"
+    },
+    "./enums": {
+      "types": "./dist/enums/index.d.ts",
+      "default": "./dist/enums/index.js"
     }
   },
   "scripts": {

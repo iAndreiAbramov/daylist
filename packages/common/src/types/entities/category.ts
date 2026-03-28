@@ -1,10 +1,11 @@
 import { IBase } from './base';
+import { CategoryTypeEnum } from '../../enums';
 
-export type CategoryType = 'task' | 'note' | 'finance';
+export type { CategoryTypeEnum };
 
 export interface ICategory extends IBase {
   userId: string;
   name: string;
-  type: CategoryType;
+  type: CategoryTypeEnum;
   position: number;
 }

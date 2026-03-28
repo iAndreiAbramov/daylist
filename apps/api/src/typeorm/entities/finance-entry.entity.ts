@@ -6,9 +6,11 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Relation,
   UpdateDateColumn,
 } from 'typeorm';
-import type { FinanceEntryType, IFinanceEntry } from '@daylist/common';
+import { FinanceEntryTypeEnum } from '@daylist/common/enums';
+import type { IFinanceEntry } from '@daylist/common/types/entities';
 import { User } from './user.entity';
 import { Category } from './category.entity';
 
@@ -17,38 +19,42 @@ export class FinanceEntry extends BaseEntity implements IFinanceEntry {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column()
+  @Column({ type: 'uuid' })
   userId!: string;
-
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
-  user!: User;
+  user!: Relation<User>;
 
-  @Column()
+  @Column({ type: 'uuid' })
   categoryId!: string;
-
   @ManyToOne(() => Category, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'categoryId' })
-  category!: Category;
+  category!: Relation<Category>;
 
-  @Column({ type: 'decimal', precision: 15, scale: 2 })
+  @Column({
+    type: 'bigint',
+    transformer: {
+      to: (value: number): number => Math.round(value * 100),
+      from: (value: string): number => Number(value) / 100,
+    },
+  })
   amount!: number;
 
-  @Column({ type: 'enum', enum: ['income', 'expense'] })
-  type!: FinanceEntryType;
+  @Column({ type: 'enum', enum: FinanceEntryTypeEnum })
+  type!: FinanceEntryTypeEnum;
 
   @Column({ type: 'varchar', nullable: true })
   description!: string | null;
 
-  @Column({ type: 'date' })
+  @Column({ type: 'timestamptz', default: () => 'now()' })
   date!: Date;
 
   @Column({ length: 3, default: 'RUB' })
   currency!: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt!: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt!: Date;
 }

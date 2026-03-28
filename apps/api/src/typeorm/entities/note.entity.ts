@@ -6,9 +6,10 @@ import {
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Relation,
   UpdateDateColumn,
 } from 'typeorm';
-import type { INote } from '@daylist/common';
+import type { INote } from '@daylist/common/types/entities';
 import { User } from './user.entity';
 import { Category } from './category.entity';
 
@@ -17,19 +18,17 @@ export class Note extends BaseEntity implements INote {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column()
+  @Column({ type: 'uuid' })
   userId!: string;
-
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
-  user!: User;
+  user!: Relation<User>;
 
-  @Column()
+  @Column({ type: 'uuid' })
   categoryId!: string;
-
   @ManyToOne(() => Category, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'categoryId' })
-  category!: Category;
+  category!: Relation<Category>;
 
   @Column()
   title!: string;
@@ -37,15 +36,15 @@ export class Note extends BaseEntity implements INote {
   @Column({ type: 'text', default: '' })
   content!: string;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'uuid', nullable: true })
   taskId!: string | null;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'uuid', nullable: true })
   financeEntryId!: string | null;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt!: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt!: Date;
 }

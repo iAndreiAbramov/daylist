@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import type { IUser } from '@daylist/common';
+import type { IUser } from '@daylist/common/types/entities';
 
 @Entity('users')
 export class User extends BaseEntity implements IUser {
@@ -22,9 +22,9 @@ export class User extends BaseEntity implements IUser {
   @Column({ type: 'varchar', nullable: true })
   googleId!: string | null;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt!: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamptz' })
   updatedAt!: Date;
 }

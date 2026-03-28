@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@daylist/common/types/entities": [
+        "../../packages/common/src/types/entities"
+      ],
+      "@daylist/common/enums": ["../../packages/common/src/enums"]
+    }
+  },
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  }
+}

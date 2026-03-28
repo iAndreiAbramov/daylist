@@ -8,20 +8,21 @@ import {
   Task,
   User,
 } from '../../../typeorm/entities';
+import { CategoryTypeEnum, FinanceEntryTypeEnum } from '@daylist/common/enums';
 import { seedConfig, type SeedConfig } from '../../../lib/config/seed.config';
 
 const SEED_USER_EMAIL = 'seed@daylist.dev';
 
 const MOCK_DATA = {
   categories: [
-    { name: 'Личное', type: 'task' as const },
-    { name: 'Работа', type: 'task' as const },
-    { name: 'Личное', type: 'note' as const },
-    { name: 'Общее', type: 'finance' as const },
+    { name: 'Личное', type: CategoryTypeEnum.Task },
+    { name: 'Работа', type: CategoryTypeEnum.Task },
+    { name: 'Личное', type: CategoryTypeEnum.Note },
+    { name: 'Общее', type: CategoryTypeEnum.Finance },
   ],
 
   tasks: {
-    Личное: [
+    ['Личное']: [
       {
         title: 'Купить продукты',
         completed: false,
@@ -31,7 +32,7 @@ const MOCK_DATA = {
       { title: 'Разобрать шкаф', completed: false, subtasks: [] },
       { title: 'Позвонить родителям', completed: false, subtasks: [] },
     ],
-    Работа: [
+    ['Работа']: [
       {
         title: 'Подготовить отчёт',
         completed: false,
@@ -68,47 +69,52 @@ const MOCK_DATA = {
   financeEntries: [
     {
       amount: 120000,
-      type: 'income' as const,
+      type: FinanceEntryTypeEnum.Income,
       description: 'Зарплата',
       daysAgo: 5,
     },
     {
       amount: 15000,
-      type: 'income' as const,
+      type: FinanceEntryTypeEnum.Income,
       description: 'Фриланс-проект',
       daysAgo: 12,
     },
     {
       amount: 3200,
-      type: 'expense' as const,
+      type: FinanceEntryTypeEnum.Expense,
       description: 'Продукты',
       daysAgo: 1,
     },
     {
       amount: 1500,
-      type: 'expense' as const,
+      type: FinanceEntryTypeEnum.Expense,
       description: 'Транспорт',
       daysAgo: 2,
     },
     {
       amount: 2800,
-      type: 'expense' as const,
+      type: FinanceEntryTypeEnum.Expense,
       description: 'Ресторан',
       daysAgo: 4,
     },
     {
       amount: 8900,
-      type: 'expense' as const,
+      type: FinanceEntryTypeEnum.Expense,
       description: 'Коммунальные услуги',
       daysAgo: 7,
     },
     {
       amount: 4200,
-      type: 'expense' as const,
+      type: FinanceEntryTypeEnum.Expense,
       description: 'Одежда',
       daysAgo: 10,
     },
-    { amount: 600, type: 'expense' as const, description: 'Кофе', daysAgo: 0 },
+    {
+      amount: 600,
+      type: FinanceEntryTypeEnum.Expense,
+      description: 'Кофе',
+      daysAgo: 0,
+    },
   ],
 };
 
@@ -174,7 +180,9 @@ export class SeedService implements OnModuleInit {
     userId: string,
     categories: Category[],
   ): Promise<void> {
-    const taskCategories = categories.filter((c) => c.type === 'task');
+    const taskCategories = categories.filter(
+      (c) => c.type === CategoryTypeEnum.Task,
+    );
 
     for (const category of taskCategories) {
       const mocks =
@@ -213,7 +221,9 @@ export class SeedService implements OnModuleInit {
     userId: string,
     categories: Category[],
   ): Promise<void> {
-    const noteCategory = categories.find((c) => c.type === 'note');
+    const noteCategory = categories.find(
+      (c) => c.type === CategoryTypeEnum.Note,
+    );
     if (!noteCategory) return;
 
     await this.noteRepository.save(
@@ -232,7 +242,9 @@ export class SeedService implements OnModuleInit {
     userId: string,
     categories: Category[],
   ): Promise<void> {
-    const financeCategory = categories.find((c) => c.type === 'finance');
+    const financeCategory = categories.find(
+      (c) => c.type === CategoryTypeEnum.Finance,
+    );
     if (!financeCategory) return;
 
     const now = new Date();

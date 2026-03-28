@@ -15,13 +15,23 @@ import { SeedService } from './services/seed.service';
   imports: [
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        url: config.get<string>('DATABASE_URL'),
-        entities: [__dirname + '/../../typeorm/entities/*.entity{.ts,.js}'],
-        migrations: [__dirname + '/../../typeorm/migrations/*{.ts,.js}'],
-        synchronize: false,
-      }),
+      useFactory: (config: ConfigService) => {
+        const databaseUrl = config.get<string>('DATABASE_URL');
+
+        if (!databaseUrl) {
+          throw new Error(
+            'DATABASE_URL is not defined. Please set the DATABASE_URL environment variable.',
+          );
+        }
+
+        return {
+          type: 'postgres',
+          url: databaseUrl,
+          entities: [__dirname + '/../../typeorm/entities/*.entity{.ts,.js}'],
+          migrations: [__dirname + '/../../typeorm/migrations/*{.ts,.js}'],
+          synchronize: false,
+        };
+      },
       inject: [ConfigService],
     }),
     TypeOrmModule.forFeature([User, Category, Task, Note, FinanceEntry]),
