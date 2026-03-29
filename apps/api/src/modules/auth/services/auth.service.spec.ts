@@ -5,9 +5,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as bcrypt from 'bcrypt';
 import { createHash } from 'crypto';
 import { Repository } from 'typeorm';
-import { authConfig } from '../../../lib/config/auth.config';
-import { RefreshToken, User } from '../../../typeorm/entities';
-import { makeQueryBuilder } from '../../../test/makeQueryBuilder';
+import { authConfig } from '@lib/config/auth.config';
+import { RefreshToken, User } from '@typeorm/entities';
+import { makeQueryBuilder } from '@test/makeQueryBuilder';
 import { AuthService } from './auth.service';
 
 const mockAuthConfig = {

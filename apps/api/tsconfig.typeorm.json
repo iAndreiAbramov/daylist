@@ -6,7 +6,10 @@
       "@daylist/common/types/entities": [
         "../../packages/common/src/types/entities"
       ],
-      "@daylist/common/enums": ["../../packages/common/src/enums"]
+      "@daylist/common/enums": ["../../packages/common/src/enums"],
+      "@lib/*": ["src/lib/*"],
+      "@typeorm/*": ["src/typeorm/*"],
+      "@test/*": ["src/test/*"]
     }
   },
   "ts-node": {

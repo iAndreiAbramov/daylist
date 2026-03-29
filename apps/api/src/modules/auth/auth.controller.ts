@@ -10,9 +10,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { CurrentUser } from '../../lib/decorators/current-user.decorator';
-import { JwtAuthGuard } from '../../lib/guards/jwt-auth.guard';
-import { User } from '../../typeorm/entities';
+import { CurrentUser } from '@lib/decorators/current-user.decorator';
+import { JwtAuthGuard } from '@lib/guards/jwt-auth.guard';
+import { User } from '@typeorm/entities';
 import { LoginReqDto } from './dto/req/login-req.dto';
 import { RefreshTokenReqDto } from './dto/req/refresh-token-req.dto';
 import { RegisterReqDto } from './dto/req/register-req.dto';

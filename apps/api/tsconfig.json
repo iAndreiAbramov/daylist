@@ -15,6 +15,11 @@
     "strict": true,
     "strictPropertyInitialization": false,
     "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "@lib/*": ["src/lib/*"],
+      "@typeorm/*": ["src/typeorm/*"],
+      "@test/*": ["src/test/*"]
+    }
   }
 }

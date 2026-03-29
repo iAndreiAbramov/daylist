@@ -12,10 +12,10 @@ import * as bcrypt from 'bcrypt';
 import { createHash, randomBytes } from 'crypto';
 import * as ms from 'ms';
 import { Repository } from 'typeorm';
-import { authConfig } from '../../../lib/config/auth.config';
+import { authConfig } from '@lib/config/auth.config';
 import type { StringValue } from 'ms';
-import { RefreshToken } from '../../../typeorm/entities/refresh-token.entity';
-import { User } from '../../../typeorm/entities/user.entity';
+import { RefreshToken } from '@typeorm/entities/refresh-token.entity';
+import { User } from '@typeorm/entities/user.entity';
 import type { RegisterReqDto } from '../dto/req/register-req.dto';
 
 @Injectable()
