@@ -204,6 +204,8 @@ describe('AuthService', () => {
           const innerRepo = {
             createQueryBuilder: refreshTokenRepo.createQueryBuilder,
             delete: refreshTokenRepo.delete,
+            create: refreshTokenRepo.create,
+            save: refreshTokenRepo.save,
           };
           return cb({ getRepository: () => innerRepo });
         },

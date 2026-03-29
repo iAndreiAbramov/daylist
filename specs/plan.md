@@ -51,7 +51,7 @@
 
 ## Этап 3. Аутентификация (API)
 
-Реализуем auth: email/пароль, JWT-сессии на основе access и refresh токенов.
+Реализуем auth: email/пароль, JWT access tokens + opaque refresh tokens (случайные байты, хранятся в БД как SHA-256 хэш).
 
 **Задачи:**
 
@@ -67,9 +67,9 @@
    - `GET /api/auth/me` — текущий пользователь (guard по access_token)
    - `POST /api/auth/logout` — принимает `refresh_token`, удаляет запись из БД; access_token истекает сам
 4. Реализовать `JwtAuthGuard` (валидация access_token) и декоратор `@CurrentUser()`
-5. Настроить `ConfigModule` глобально для чтения `.env`; добавить переменные `JWT_ACCESS_SECRET`, `JWT_REFRESH_SECRET`,
+5. Настроить `ConfigModule` глобально для чтения `.env`; добавить переменные `JWT_SECRET`,
    `JWT_ACCESS_EXPIRES_IN`, `JWT_REFRESH_EXPIRES_IN` в `.env.example`; создать `auth.config.ts` по аналогии с
-   `seed.config.ts` — `registerAs('auth', ...)` с zod-схемой, валидирующей все четыре переменные при старте приложения;
+   `seed.config.ts` — `registerAs('auth', ...)` с zod-схемой, валидирующей все три переменные при старте приложения;
    подключить `authConfig` в `AuthModule` через `ConfigModule.forFeature(authConfig)`
 6. Написать unit-тесты для `AuthService`
 

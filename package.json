@@ -25,5 +25,8 @@
   "lint-staged": {
     "**/*.{ts,tsx,js,jsx,mjs,json,md,astro}": "prettier --write"
   },
+  "engines": {
+    "node": ">=20"
+  },
   "packageManager": "pnpm@9.15.4"
 }

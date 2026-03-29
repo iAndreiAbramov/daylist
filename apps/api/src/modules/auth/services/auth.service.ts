@@ -11,7 +11,7 @@ import * as bcrypt from 'bcrypt';
 import { createHash, randomBytes } from 'crypto';
 import * as ms from 'ms';
 import type { StringValue } from 'ms';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { type ITokenPairResponse } from '@daylist/common';
 import { authConfig } from '@lib/config/auth.config';
 import { RefreshToken } from '@typeorm/entities/refresh-token.entity';
@@ -63,9 +63,7 @@ export class AuthService {
     const tokenHash = this.hashToken(rawRefreshToken);
     const now = new Date();
 
-    let user: User | null = null;
-
-    await this.refreshTokenRepo.manager.transaction(async (manager) => {
+    return this.refreshTokenRepo.manager.transaction(async (manager) => {
       const rtRepo = manager.getRepository(RefreshToken);
 
       const stored = await rtRepo
@@ -80,14 +78,8 @@ export class AuthService {
       }
 
       await rtRepo.delete(stored.id);
-      user = stored.user;
+      return this.generateTokenPair(stored.user, manager);
     });
-
-    if (!user) {
-      throw new UnauthorizedException('Invalid or expired refresh token');
-    }
-
-    return this.generateTokenPair(user);
   }
 
   async logout(rawRefreshToken: string, userId: string): Promise<void> {
@@ -95,7 +87,10 @@ export class AuthService {
     await this.refreshTokenRepo.delete({ token: tokenHash, userId });
   }
 
-  async generateTokenPair(user: User): Promise<ITokenPairResponse> {
+  async generateTokenPair(
+    user: User,
+    manager?: EntityManager,
+  ): Promise<ITokenPairResponse> {
     const payload = { sub: user.id, email: user.email };
 
     const accessToken = this.jwtService.sign(payload);
@@ -104,8 +99,11 @@ export class AuthService {
     const tokenHash = this.hashToken(rawRefreshToken);
 
     const expiresAt = this.parseExpiresIn(this.config.refreshExpiresIn);
-    await this.refreshTokenRepo.save(
-      this.refreshTokenRepo.create({
+    const rtRepo = manager
+      ? manager.getRepository(RefreshToken)
+      : this.refreshTokenRepo;
+    await rtRepo.save(
+      rtRepo.create({
         userId: user.id,
         token: tokenHash,
         expiresAt,
