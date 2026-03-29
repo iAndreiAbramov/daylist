@@ -1,34 +1,32 @@
 import {
   ConflictException,
+  Inject,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { type ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { type ITokenPairResponse } from '@daylist/common';
 import * as bcrypt from 'bcrypt';
 import { createHash, randomBytes } from 'crypto';
 import { Repository } from 'typeorm';
-import type { AuthConfig } from '../../../lib/config/auth.config';
+import { authConfig } from '../../../lib/config/auth.config';
 import { RefreshToken } from '../../../typeorm/entities/refresh-token.entity';
 import { User } from '../../../typeorm/entities/user.entity';
 import type { RegisterReqDto } from '../dto/req/register-req.dto';
 
 @Injectable()
 export class AuthService {
-  private readonly authConfig: AuthConfig;
-
   constructor(
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
     @InjectRepository(RefreshToken)
     private readonly refreshTokenRepo: Repository<RefreshToken>,
     private readonly jwtService: JwtService,
-    configService: ConfigService,
-  ) {
-    this.authConfig = configService.get<AuthConfig>('auth')!;
-  }
+    @Inject(authConfig.KEY)
+    private readonly config: ConfigType<typeof authConfig>,
+  ) {}
 
   async validateUser(email: string, password: string): Promise<User | null> {
     const user = await this.userRepo
@@ -89,7 +87,7 @@ export class AuthService {
     const rawRefreshToken = randomBytes(64).toString('hex');
     const tokenHash = this.hashToken(rawRefreshToken);
 
-    const expiresAt = this.parseExpiresIn(this.authConfig.refreshExpiresIn);
+    const expiresAt = this.parseExpiresIn(this.config.refreshExpiresIn);
     await this.refreshTokenRepo.save(
       this.refreshTokenRepo.create({
         userId: user.id,

@@ -1,5 +1,10 @@
 import { registerAs } from '@nestjs/config';
+import type { StringValue } from 'ms';
 import { z } from 'zod';
+
+const stringValue = z.custom<StringValue>(
+  (val) => typeof val === 'string' && val.length > 0,
+);
 
 const schema = z.object({
   accessSecret: z.string().min(1, {
@@ -8,8 +13,8 @@ const schema = z.object({
   refreshSecret: z.string().min(1, {
     message: 'JWT_REFRESH_SECRET must not be empty',
   }),
-  accessExpiresIn: z.string().default('15m'),
-  refreshExpiresIn: z.string().default('30d'),
+  accessExpiresIn: stringValue.default('15m'),
+  refreshExpiresIn: stringValue.default('30d'),
 });
 
 export type AuthConfig = z.infer<typeof schema>;

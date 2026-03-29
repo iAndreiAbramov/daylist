@@ -1,11 +1,11 @@
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as bcrypt from 'bcrypt';
 import { createHash } from 'crypto';
 import { Repository } from 'typeorm';
+import { authConfig } from '../../../lib/config/auth.config';
 import { RefreshToken, User } from '../../../typeorm/entities';
 import { makeQueryBuilder } from '../../../test/makeQueryBuilder';
 import { AuthService } from './auth.service';
@@ -84,8 +84,8 @@ describe('AuthService', () => {
           useValue: { sign: jest.fn().mockReturnValue('access-token') },
         },
         {
-          provide: ConfigService,
-          useValue: { get: jest.fn().mockReturnValue(mockAuthConfig) },
+          provide: authConfig.KEY,
+          useValue: mockAuthConfig,
         },
       ],
     }).compile();
