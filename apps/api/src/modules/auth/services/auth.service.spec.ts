@@ -54,7 +54,7 @@ describe('AuthService', () => {
       Repository<RefreshToken>,
       'create' | 'save' | 'delete' | 'createQueryBuilder'
     >
-  >;
+  > & { manager: { transaction: jest.Mock } };
   let jwtService: jest.Mocked<JwtService>;
 
   beforeEach(async () => {
@@ -77,6 +77,7 @@ describe('AuthService', () => {
             save: jest.fn(),
             delete: jest.fn(),
             createQueryBuilder: jest.fn(),
+            manager: { transaction: jest.fn() },
           },
         },
         {
@@ -198,11 +199,22 @@ describe('AuthService', () => {
   });
 
   describe('refresh', () => {
+    function setupTransaction() {
+      refreshTokenRepo.manager.transaction.mockImplementation(async (cb) => {
+        const innerRepo = {
+          createQueryBuilder: refreshTokenRepo.createQueryBuilder,
+          delete: refreshTokenRepo.delete,
+        };
+        return cb({ getRepository: () => innerRepo });
+      });
+    }
+
     it('returns new token pair and deletes old refresh token', async () => {
       const rawToken = 'raw-refresh-token';
       const tokenHash = createHash('sha256').update(rawToken).digest('hex');
       const stored = makeRefreshToken({ token: tokenHash });
 
+      setupTransaction();
       refreshTokenRepo.createQueryBuilder.mockReturnValue(
         makeQueryBuilder(stored),
       );
@@ -218,6 +230,7 @@ describe('AuthService', () => {
     });
 
     it('throws UnauthorizedException when token not found', async () => {
+      setupTransaction();
       refreshTokenRepo.createQueryBuilder.mockReturnValue(
         makeQueryBuilder(null),
       );
@@ -235,6 +248,7 @@ describe('AuthService', () => {
         expiresAt: new Date(Date.now() - 1000),
       });
 
+      setupTransaction();
       refreshTokenRepo.createQueryBuilder.mockReturnValue(
         makeQueryBuilder(expired),
       );
@@ -246,15 +260,17 @@ describe('AuthService', () => {
   });
 
   describe('logout', () => {
-    it('deletes refresh token by hash', async () => {
+    it('deletes refresh token by hash and userId', async () => {
       const rawToken = 'raw-refresh-token';
+      const userId = 'user-uuid';
       const tokenHash = createHash('sha256').update(rawToken).digest('hex');
       refreshTokenRepo.delete.mockResolvedValue({ affected: 1, raw: [] });
 
-      await service.logout(rawToken);
+      await service.logout(rawToken, userId);
 
       expect(refreshTokenRepo.delete).toHaveBeenCalledWith({
         token: tokenHash,
+        userId,
       });
     });
   });
