@@ -4,7 +4,19 @@
   "tabWidth": 2,
   "trailingComma": "all",
   "printWidth": 80,
-  "plugins": ["prettier-plugin-astro"],
+  "plugins": [
+    "@trivago/prettier-plugin-sort-imports",
+    "prettier-plugin-astro"
+  ],
+  "importOrder": [
+    "<THIRD_PARTY_MODULES>",
+    "^@daylist/(.*)$",
+    "^@(lib|typeorm|test)/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSeparation": false,
+  "importOrderSortSpecifiers": true,
+  "importOrderParserPlugins": ["typescript", "decorators-legacy"],
   "overrides": [
     {
       "files": "*.astro",

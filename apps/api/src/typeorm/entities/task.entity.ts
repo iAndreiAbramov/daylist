@@ -10,8 +10,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import type { ITask } from '@daylist/common/types/entities';
-import { User } from './user.entity';
 import { Category } from './category.entity';
+import { User } from './user.entity';
 
 @Entity('tasks')
 export class Task extends BaseEntity implements ITask {

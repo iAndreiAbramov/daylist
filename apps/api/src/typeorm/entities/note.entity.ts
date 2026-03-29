@@ -10,8 +10,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import type { INote } from '@daylist/common/types/entities';
-import { User } from './user.entity';
 import { Category } from './category.entity';
+import { User } from './user.entity';
 
 @Entity('notes')
 export class Note extends BaseEntity implements INote {

@@ -95,3 +95,30 @@ pnpm lint          # ESLint with auto-fix
 - Prettier: single quotes, semicolons, 2-space indent, trailing commas, 80-char width
 - TypeScript strict mode in all apps
 - Pre-commit hook (husky + lint-staged): runs `prettier --write` on staged `ts,tsx,js,jsx,mjs,json,md,astro` files
+
+### File naming conventions
+
+- If a file exports or is centred around a single entity/class/type, the file name must match that entity's name (case-insensitive, e.g. `user.entity.ts` for `User`, `makeQueryBuilder.ts` for `makeQueryBuilder`)
+- Utility files follow a **1 function = 1 file** rule: each utility function lives in its own file named after that function
+
+### NestJS module structure
+
+Each module follows this directory layout:
+
+```
+<module>/
+├── dto/
+│   ├── req/   # Request DTOs — validated with class-validator, named *ReqDto
+│   └── res/   # Response DTOs — serialized with class-transformer, named *ResDto, all fields marked @Expose()
+├── services/  # Service files and their spec files
+├── strategies/
+├── <module>.controller.ts
+└── <module>.module.ts
+```
+
+### Serialization
+
+- Global `ClassSerializerInterceptor` is configured with `strategy: 'excludeAll'` and `excludeExtraneousValues: true`
+- **Only fields explicitly decorated with `@Expose()` appear in API responses** — all other fields are stripped
+- Response DTOs (in `dto/res/`) must mark every field with `@Expose()`
+- Controllers return class instances (use `plainToInstance` when needed) so the interceptor can apply serialization

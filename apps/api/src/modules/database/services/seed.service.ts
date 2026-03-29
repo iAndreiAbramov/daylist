@@ -1,15 +1,9 @@
 import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import {
-  Category,
-  FinanceEntry,
-  Note,
-  Task,
-  User,
-} from '../../../typeorm/entities';
 import { CategoryTypeEnum, FinanceEntryTypeEnum } from '@daylist/common/enums';
-import { seedConfig, type SeedConfig } from '../../../lib/config/seed.config';
+import { type SeedConfig, seedConfig } from '@lib/config/seed.config';
+import { Category, FinanceEntry, Note, Task, User } from '@typeorm/entities';
 
 const SEED_USER_EMAIL = 'seed@daylist.dev';
 

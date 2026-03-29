@@ -1,14 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { seedConfig } from '../../lib/config/seed.config';
-import {
-  Category,
-  FinanceEntry,
-  Note,
-  Task,
-  User,
-} from '../../typeorm/entities';
+import { seedConfig } from '@lib/config/seed.config';
+import { Category, FinanceEntry, Note, Task, User } from '@typeorm/entities';
 import { SeedService } from './services/seed.service';
 
 @Module({
