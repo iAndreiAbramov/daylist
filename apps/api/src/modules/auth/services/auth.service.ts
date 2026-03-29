@@ -7,13 +7,13 @@ import {
 import { type ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { type ITokenPairResponse } from '@daylist/common';
 import * as bcrypt from 'bcrypt';
 import { createHash, randomBytes } from 'crypto';
 import * as ms from 'ms';
-import { Repository } from 'typeorm';
-import { authConfig } from '@lib/config/auth.config';
 import type { StringValue } from 'ms';
+import { Repository } from 'typeorm';
+import { type ITokenPairResponse } from '@daylist/common';
+import { authConfig } from '@lib/config/auth.config';
 import { RefreshToken } from '@typeorm/entities/refresh-token.entity';
 import { User } from '@typeorm/entities/user.entity';
 import type { RegisterReqDto } from '../dto/req/register-req.dto';

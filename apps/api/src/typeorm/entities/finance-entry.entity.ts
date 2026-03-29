@@ -11,8 +11,8 @@ import {
 } from 'typeorm';
 import { FinanceEntryTypeEnum } from '@daylist/common/enums';
 import type { IFinanceEntry } from '@daylist/common/types/entities';
-import { User } from './user.entity';
 import { Category } from './category.entity';
+import { User } from './user.entity';
 
 @Entity('finance_entries')
 export class FinanceEntry extends BaseEntity implements IFinanceEntry {

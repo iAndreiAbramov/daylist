@@ -1,13 +1,13 @@
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { createHash } from 'crypto';
 import { Repository } from 'typeorm';
 import { authConfig } from '@lib/config/auth.config';
-import { RefreshToken, User } from '@typeorm/entities';
 import { makeQueryBuilder } from '@test/makeQueryBuilder';
+import { RefreshToken, User } from '@typeorm/entities';
 import { AuthService } from './auth.service';
 
 const mockAuthConfig = {

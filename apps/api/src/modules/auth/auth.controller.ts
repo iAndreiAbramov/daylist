@@ -18,8 +18,8 @@ import { RefreshTokenReqDto } from './dto/req/refresh-token-req.dto';
 import { RegisterReqDto } from './dto/req/register-req.dto';
 import { TokenPairResDto } from './dto/res/token-pair-res.dto';
 import { UserResDto } from './dto/res/user-res.dto';
-import { JwtUser } from './strategies/jwt.strategy';
 import { AuthService } from './services/auth.service';
+import { JwtUser } from './strategies/jwt.strategy';
 
 @Controller('auth')
 export class AuthController {
