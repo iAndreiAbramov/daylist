@@ -10,8 +10,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { type ITokenPairResponse } from '@daylist/common';
 import * as bcrypt from 'bcrypt';
 import { createHash, randomBytes } from 'crypto';
+import * as ms from 'ms';
 import { Repository } from 'typeorm';
 import { authConfig } from '../../../lib/config/auth.config';
+import type { StringValue } from 'ms';
 import { RefreshToken } from '../../../typeorm/entities/refresh-token.entity';
 import { User } from '../../../typeorm/entities/user.entity';
 import type { RegisterReqDto } from '../dto/req/register-req.dto';
@@ -117,19 +119,12 @@ export class AuthService {
     return createHash('sha256').update(token).digest('hex');
   }
 
-  private parseExpiresIn(expiresIn: string): Date {
-    const match = expiresIn.match(/^(\d+)([smhd])$/);
-    if (!match) throw new Error(`Invalid expiresIn format: ${expiresIn}`);
+  private parseExpiresIn(expiresIn: StringValue): Date {
+    const milliseconds = ms(expiresIn);
+    if (milliseconds === undefined) {
+      throw new Error(`Invalid expiresIn format: ${expiresIn}`);
+    }
 
-    const value = parseInt(match[1], 10);
-    const unit = match[2];
-    const msMap: Record<string, number> = {
-      s: 1000,
-      m: 60 * 1000,
-      h: 60 * 60 * 1000,
-      d: 24 * 60 * 60 * 1000,
-    };
-
-    return new Date(Date.now() + value * msMap[unit]);
+    return new Date(Date.now() + milliseconds);
   }
 }

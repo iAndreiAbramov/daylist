@@ -19,7 +19,7 @@ export class RefreshToken {
   @Column({ type: 'uuid' })
   userId!: string;
 
-  @Column()
+  @Column({ unique: true })
   token!: string;
 
   @Column({ type: 'timestamptz' })

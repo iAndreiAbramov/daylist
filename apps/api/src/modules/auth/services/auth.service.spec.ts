@@ -11,8 +11,7 @@ import { makeQueryBuilder } from '../../../test/makeQueryBuilder';
 import { AuthService } from './auth.service';
 
 const mockAuthConfig = {
-  accessSecret: 'access-secret',
-  refreshSecret: 'refresh-secret',
+  jwtSecret: 'jwt-secret',
   accessExpiresIn: '15m',
   refreshExpiresIn: '30d',
 };
