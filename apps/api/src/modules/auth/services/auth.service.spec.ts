@@ -200,13 +200,15 @@ describe('AuthService', () => {
 
   describe('refresh', () => {
     function setupTransaction() {
-      refreshTokenRepo.manager.transaction.mockImplementation(async (cb) => {
-        const innerRepo = {
-          createQueryBuilder: refreshTokenRepo.createQueryBuilder,
-          delete: refreshTokenRepo.delete,
-        };
-        return cb({ getRepository: () => innerRepo });
-      });
+      refreshTokenRepo.manager.transaction.mockImplementation(
+        (cb: (manager: unknown) => Promise<unknown>) => {
+          const innerRepo = {
+            createQueryBuilder: refreshTokenRepo.createQueryBuilder,
+            delete: refreshTokenRepo.delete,
+          };
+          return cb({ getRepository: () => innerRepo });
+        },
+      );
     }
 
     it('returns new token pair and deletes old refresh token', async () => {
