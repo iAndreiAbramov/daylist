@@ -14,17 +14,17 @@ export class RefreshToken {
   id!: string;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'user_id' })
+  @JoinColumn({ name: 'userId' })
   user!: User;
-  @Column({ name: 'user_id' })
+  @Column({ type: 'uuid' })
   userId!: string;
 
   @Column()
   token!: string;
 
-  @Column({ name: 'expires_at', type: 'timestamptz' })
+  @Column({ type: 'timestamptz' })
   expiresAt!: Date;
 
-  @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
+  @CreateDateColumn({ type: 'timestamptz' })
   createdAt!: Date;
 }

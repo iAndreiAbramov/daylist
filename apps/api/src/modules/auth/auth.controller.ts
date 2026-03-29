@@ -13,10 +13,12 @@ import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from '../../lib/decorators/current-user.decorator';
 import { JwtAuthGuard } from '../../lib/guards/jwt-auth.guard';
 import { User } from '../../typeorm/entities';
+import { LoginReqDto } from './dto/req/login-req.dto';
 import { RefreshTokenReqDto } from './dto/req/refresh-token-req.dto';
 import { RegisterReqDto } from './dto/req/register-req.dto';
 import { TokenPairResDto } from './dto/res/token-pair-res.dto';
 import { UserResDto } from './dto/res/user-res.dto';
+import { JwtUser } from './strategies/jwt.strategy';
 import { AuthService } from './services/auth.service';
 
 @Controller('auth')
@@ -33,7 +35,10 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @SerializeOptions({ type: TokenPairResDto })
-  login(@Request() req: { user: User }): Promise<TokenPairResDto> {
+  login(
+    @Body() _dto: LoginReqDto,
+    @Request() req: { user: User },
+  ): Promise<TokenPairResDto> {
     return this.authService.login(req.user);
   }
 
@@ -47,14 +52,17 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   @SerializeOptions({ type: UserResDto })
-  me(@CurrentUser() user: User): UserResDto {
+  me(@CurrentUser() user: JwtUser): UserResDto {
     return user;
   }
 
   @UseGuards(JwtAuthGuard)
   @Post('logout')
   @HttpCode(HttpStatus.NO_CONTENT)
-  logout(@Body() dto: RefreshTokenReqDto): Promise<void> {
-    return this.authService.logout(dto.refreshToken);
+  logout(
+    @Body() dto: RefreshTokenReqDto,
+    @CurrentUser() user: JwtUser,
+  ): Promise<void> {
+    return this.authService.logout(dto.refreshToken, user.id);
   }
 }

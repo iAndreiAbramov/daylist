@@ -59,24 +59,38 @@ export class AuthService {
 
   async refresh(rawRefreshToken: string): Promise<ITokenPairResponse> {
     const tokenHash = this.hashToken(rawRefreshToken);
-    const stored = await this.refreshTokenRepo
-      .createQueryBuilder('rt')
-      .innerJoinAndSelect('rt.user', 'user')
-      .where('rt.token = :token', { token: tokenHash })
-      .getOne();
+    const now = new Date();
 
-    if (!stored || stored.expiresAt < new Date()) {
+    let user: User | null = null;
+
+    await this.refreshTokenRepo.manager.transaction(async (manager) => {
+      const rtRepo = manager.getRepository(RefreshToken);
+
+      const stored = await rtRepo
+        .createQueryBuilder('rt')
+        .innerJoinAndSelect('rt.user', 'user')
+        .setLock('pessimistic_write')
+        .where('rt.token = :token', { token: tokenHash })
+        .getOne();
+
+      if (!stored || stored.expiresAt < now) {
+        throw new UnauthorizedException('Invalid or expired refresh token');
+      }
+
+      await rtRepo.delete(stored.id);
+      user = stored.user;
+    });
+
+    if (!user) {
       throw new UnauthorizedException('Invalid or expired refresh token');
     }
 
-    await this.refreshTokenRepo.delete(stored.id);
-
-    return this.generateTokenPair(stored.user);
+    return this.generateTokenPair(user);
   }
 
-  async logout(rawRefreshToken: string): Promise<void> {
+  async logout(rawRefreshToken: string, userId: string): Promise<void> {
     const tokenHash = this.hashToken(rawRefreshToken);
-    await this.refreshTokenRepo.delete({ token: tokenHash });
+    await this.refreshTokenRepo.delete({ token: tokenHash, userId });
   }
 
   async generateTokenPair(user: User): Promise<ITokenPairResponse> {
