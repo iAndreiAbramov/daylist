@@ -47,7 +47,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   @SerializeOptions({ type: UserResDto })
-  me(@CurrentUser() user: User): User {
+  me(@CurrentUser() user: User): UserResDto {
     return user;
   }
 

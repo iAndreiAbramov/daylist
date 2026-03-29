@@ -20,7 +20,7 @@ import { LocalStrategy } from './strategies/local.strategy';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<AuthConfig>('auth')!.accessSecret,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         signOptions: {
           expiresIn: configService.get<AuthConfig>('auth')!
             .accessExpiresIn as any,
