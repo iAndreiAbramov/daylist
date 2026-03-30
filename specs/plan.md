@@ -49,16 +49,16 @@
 
 ---
 
-## Этап 3. Аутентификация (API)
+## ✅ Этап 3. Аутентификация (API)
 
 Реализуем auth: email/пароль, JWT access tokens + opaque refresh tokens (случайные байты, хранятся в БД как SHA-256 хэш).
 
 **Задачи:**
 
-1. Установить: `@nestjs/jwt`, `@nestjs/passport`, `passport`, `passport-local`, `passport-jwt`, `bcrypt`
-2. Создать миграцию и TypeORM-сущность `RefreshToken` (`id`, `userId`, `token` (хэш), `expiresAt`, `createdAt`) для
+1. ✅ Установить: `@nestjs/jwt`, `@nestjs/passport`, `passport`, `passport-local`, `passport-jwt`, `bcrypt`
+2. ✅ Создать миграцию и TypeORM-сущность `RefreshToken` (`id`, `userId`, `token` (хэш), `expiresAt`, `createdAt`) для
    хранения выданных refresh токенов в БД
-3. Создать `AuthModule` с эндпоинтами:
+3. ✅ Создать `AuthModule` с эндпоинтами:
    - `POST /api/auth/register` — регистрация email/пароль; возвращает `access_token` (короткоживущий, 15 мин) и
      `refresh_token` (долгоживущий, 30 дней)
    - `POST /api/auth/login` — вход email/пароль; возвращает `access_token` и `refresh_token`
@@ -66,12 +66,12 @@
      старый refresh токен инвалидируется)
    - `GET /api/auth/me` — текущий пользователь (guard по access_token)
    - `POST /api/auth/logout` — принимает `refresh_token`, удаляет запись из БД; access_token истекает сам
-4. Реализовать `JwtAuthGuard` (валидация access_token) и декоратор `@CurrentUser()`
-5. Настроить `ConfigModule` глобально для чтения `.env`; добавить переменные `JWT_SECRET`,
+4. ✅ Реализовать `JwtAuthGuard` (валидация access_token) и декоратор `@CurrentUser()`
+5. ✅ Настроить `ConfigModule` глобально для чтения `.env`; добавить переменные `JWT_SECRET`,
    `JWT_ACCESS_EXPIRES_IN`, `JWT_REFRESH_EXPIRES_IN` в `.env.example`; создать `auth.config.ts` по аналогии с
    `seed.config.ts` — `registerAs('auth', ...)` с zod-схемой, валидирующей все три переменные при старте приложения;
    подключить `authConfig` в `AuthModule` через `ConfigModule.forFeature(authConfig)`
-6. Написать unit-тесты для `AuthService`
+6. ✅ Написать unit-тесты для `AuthService`
 
 ---
 

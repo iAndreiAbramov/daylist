@@ -21,7 +21,7 @@ import { SeedService } from './services/seed.service';
         return {
           type: 'postgres',
           url: databaseUrl,
-          entities: [__dirname + '/../../typeorm/entities/*.entity{.ts,.js}'],
+          autoLoadEntities: true,
           migrations: [__dirname + '/../../typeorm/migrations/*{.ts,.js}'],
           synchronize: false,
         };

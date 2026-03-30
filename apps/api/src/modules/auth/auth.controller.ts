@@ -13,7 +13,6 @@ import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from '@lib/decorators/current-user.decorator';
 import { JwtAuthGuard } from '@lib/guards/jwt-auth.guard';
 import { User } from '@typeorm/entities';
-import { LoginReqDto } from './dto/req/login-req.dto';
 import { RefreshTokenReqDto } from './dto/req/refresh-token-req.dto';
 import { RegisterReqDto } from './dto/req/register-req.dto';
 import { TokenPairResDto } from './dto/res/token-pair-res.dto';
@@ -26,6 +25,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
+  @HttpCode(HttpStatus.OK)
   @SerializeOptions({ type: TokenPairResDto })
   register(@Body() dto: RegisterReqDto): Promise<TokenPairResDto> {
     return this.authService.register(dto);
@@ -35,10 +35,7 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @SerializeOptions({ type: TokenPairResDto })
-  login(
-    @Body() _dto: LoginReqDto,
-    @Request() req: { user: User },
-  ): Promise<TokenPairResDto> {
+  login(@Request() req: { user: User }): Promise<TokenPairResDto> {
     return this.authService.login(req.user);
   }
 

@@ -18,6 +18,7 @@
     "noFallthroughCasesInSwitch": true,
     "paths": {
       "@lib/*": ["src/lib/*"],
+      "@modules/*": ["src/modules/*"],
       "@typeorm/*": ["src/typeorm/*"],
       "@test/*": ["src/test/*"]
     }
