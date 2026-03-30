@@ -1,4 +1,5 @@
-import { ConflictException, UnauthorizedException } from '@nestjs/common';
+import { AppConsoleLogger } from '@modules/logger/app-console-logger';
+import { UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
@@ -87,6 +88,10 @@ describe('AuthService', () => {
           provide: authConfig.KEY,
           useValue: mockAuthConfig,
         },
+        {
+          provide: AppConsoleLogger,
+          useValue: { error: jest.fn() },
+        },
       ],
     }).compile();
 
@@ -172,15 +177,16 @@ describe('AuthService', () => {
       });
     });
 
-    it('throws ConflictException when email is already registered', async () => {
+    it('returns fake token pair when email is already registered', async () => {
       userRepo.findOneBy.mockResolvedValue(makeUser());
 
-      await expect(
-        service.register({
-          email: 'test@example.com',
-          password: 'password123',
-        }),
-      ).rejects.toThrow(ConflictException);
+      const result = await service.register({
+        email: 'test@example.com',
+        password: 'password123',
+      });
+
+      expect(result).toHaveProperty('accessToken');
+      expect(result).toHaveProperty('refreshToken');
     });
   });
 

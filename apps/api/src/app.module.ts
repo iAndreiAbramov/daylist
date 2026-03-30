@@ -16,6 +16,7 @@ import { HttpExceptionFilter } from '@lib/filters/http-exception.filter';
   ],
   controllers: [],
   providers: [
+    // orders matters: HttpExceptionFilter should be after AllExceptionsFilter to catch HttpExceptions first
     {
       provide: APP_FILTER,
       useClass: AllExceptionsFilter,

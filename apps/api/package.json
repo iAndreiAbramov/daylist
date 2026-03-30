@@ -88,6 +88,7 @@
     "passWithNoTests": true,
     "moduleNameMapper": {
       "^@lib/(.*)$": "<rootDir>/lib/$1",
+      "^@modules/(.*)$": "<rootDir>/modules/$1",
       "^@typeorm/(.*)$": "<rootDir>/typeorm/$1",
       "^@test/(.*)$": "<rootDir>/test/$1"
     }
