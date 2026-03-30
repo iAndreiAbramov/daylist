@@ -1,16 +1,12 @@
-import {
-  ConflictException,
-  Inject,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { AppConsoleLogger } from '@modules/logger/app-console-logger';
+import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { type ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { createHash, randomBytes } from 'crypto';
-import * as ms from 'ms';
 import type { StringValue } from 'ms';
+import * as ms from 'ms';
 import { EntityManager, Repository } from 'typeorm';
 import { type ITokenPairResponse } from '@daylist/common';
 import { authConfig } from '@lib/config/auth.config';
@@ -28,6 +24,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     @Inject(authConfig.KEY)
     private readonly config: ConfigType<typeof authConfig>,
+    private readonly logger: AppConsoleLogger,
   ) {}
 
   async validateUser(email: string, password: string): Promise<User | null> {
@@ -45,7 +42,12 @@ export class AuthService {
   async register(dto: RegisterReqDto): Promise<ITokenPairResponse> {
     const existing = await this.userRepo.findOneBy({ email: dto.email });
     if (existing) {
-      throw new ConflictException('Email already registered');
+      this.logger.error(
+        'Email already registered',
+        AuthService.name,
+        this.register.name,
+      );
+      return this.generateFakeTokenPair();
     }
 
     const passwordHash = await bcrypt.hash(dto.password, 10);
@@ -74,7 +76,12 @@ export class AuthService {
         .getOne();
 
       if (!stored || stored.expiresAt < now) {
-        throw new UnauthorizedException('Invalid or expired refresh token');
+        this.logger.error(
+          'Invalid or expired refresh token',
+          AuthService.name,
+          this.refresh.name,
+        );
+        throw new UnauthorizedException();
       }
 
       await rtRepo.delete(stored.id);
@@ -111,6 +118,23 @@ export class AuthService {
     );
 
     return { accessToken, refreshToken: rawRefreshToken };
+  }
+
+  private generateFakeTokenPair(): ITokenPairResponse {
+    const header = Buffer.from(
+      JSON.stringify({ alg: 'HS256', typ: 'JWT' }),
+    ).toString('base64url');
+    const payload = Buffer.from(
+      JSON.stringify({
+        sub: randomBytes(16).toString('hex'),
+        exp: Math.floor(Date.now() / 1000) + 900,
+      }),
+    ).toString('base64url');
+    const signature = randomBytes(32).toString('base64url');
+    return {
+      accessToken: `${header}.${payload}.${signature}`,
+      refreshToken: randomBytes(64).toString('hex'),
+    };
   }
 
   private hashToken(token: string): string {
