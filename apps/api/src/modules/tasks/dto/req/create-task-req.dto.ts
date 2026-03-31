@@ -4,6 +4,7 @@ import {
   IsOptional,
   IsString,
   IsUUID,
+  MaxLength,
   Min,
   MinLength,
 } from 'class-validator';
@@ -14,10 +15,11 @@ export class CreateTaskReqDto {
 
   @IsOptional()
   @IsUUID()
-  parentId?: string;
+  parentId?: string | null;
 
   @IsString()
   @MinLength(1)
+  @MaxLength(255)
   title!: string;
 
   @IsOptional()

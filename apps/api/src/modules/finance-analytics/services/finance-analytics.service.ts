@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
-  Between,
+  And,
   FindOptionsWhere,
-  LessThanOrEqual,
+  LessThan,
   MoreThanOrEqual,
   Repository,
 } from 'typeorm';
@@ -37,6 +37,14 @@ export class FinanceAnalyticsService {
     userId: string,
     query: FinanceAnalyticsQueryReqDto,
   ): Promise<FinanceAnalyticsResDto> {
+    if (
+      query.from &&
+      query.to &&
+      new Date(query.from).getTime() > new Date(query.to).getTime()
+    ) {
+      throw new BadRequestException('from must be less than or equal to to');
+    }
+
     const entries = await this.loadEntries(userId, query.from, query.to);
 
     let previousPeriod: PreviousPeriodResDto | null = null;
@@ -59,11 +67,15 @@ export class FinanceAnalyticsService {
   ): Promise<FinanceEntry[]> {
     const where: FindOptionsWhere<FinanceEntry> = { userId };
     if (from && to) {
-      where.date = Between(new Date(from), new Date(to));
+      const toDate = new Date(to);
+      toDate.setUTCDate(toDate.getUTCDate() + 1);
+      where.date = And(MoreThanOrEqual(new Date(from)), LessThan(toDate));
     } else if (from) {
       where.date = MoreThanOrEqual(new Date(from));
     } else if (to) {
-      where.date = LessThanOrEqual(new Date(to));
+      const toDate = new Date(to);
+      toDate.setUTCDate(toDate.getUTCDate() + 1);
+      where.date = LessThan(toDate);
     }
     return this.financeEntryRepo.find({ where, order: { date: 'ASC' } });
   }
@@ -98,9 +110,9 @@ export class FinanceAnalyticsService {
     };
   }
 
-  private computeByCategory(
+  private groupByCategory(
     entries: FinanceEntry[],
-  ): CategoryBreakdownItemResDto[] {
+  ): Map<string, { income: number; expense: number }> {
     const map = new Map<string, { income: number; expense: number }>();
     for (const e of entries) {
       const current = map.get(e.categoryId) ?? { income: 0, expense: 0 };
@@ -111,12 +123,20 @@ export class FinanceAnalyticsService {
       }
       map.set(e.categoryId, current);
     }
-    return [...map.entries()].map(([categoryId, data]) => ({
-      categoryId,
-      income: data.income,
-      expense: data.expense,
-      balance: data.income - data.expense,
-    }));
+    return map;
+  }
+
+  private computeByCategory(
+    entries: FinanceEntry[],
+  ): CategoryBreakdownItemResDto[] {
+    return [...this.groupByCategory(entries).entries()].map(
+      ([categoryId, data]) => ({
+        categoryId,
+        income: data.income,
+        expense: data.expense,
+        balance: data.income - data.expense,
+      }),
+    );
   }
 
   private computeByDay(entries: FinanceEntry[]): DayDynamicsItemResDto[] {
@@ -144,18 +164,7 @@ export class FinanceAnalyticsService {
   private computeTopCategories(
     entries: FinanceEntry[],
   ): TopCategoryItemResDto[] {
-    const map = new Map<string, { income: number; expense: number }>();
-    for (const e of entries) {
-      const current = map.get(e.categoryId) ?? { income: 0, expense: 0 };
-      if (e.type === FinanceEntryTypeEnum.Income) {
-        current.income += e.amount;
-      } else {
-        current.expense += e.amount;
-      }
-      map.set(e.categoryId, current);
-    }
-
-    const categories = [...map.entries()];
+    const categories = [...this.groupByCategory(entries).entries()];
 
     const topExpense: TopCategoryItemResDto[] = categories
       .filter(([, data]) => data.expense > 0)

@@ -1,4 +1,10 @@
-import { IsDateString, IsEnum, IsOptional, IsUUID } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsOptional,
+  IsUUID,
+  Matches,
+} from 'class-validator';
 import { FinanceEntryTypeEnum } from '@daylist/common';
 
 export class FilterFinanceEntriesReqDto {
@@ -12,9 +18,11 @@ export class FilterFinanceEntriesReqDto {
 
   @IsOptional()
   @IsDateString()
+  @Matches(/^\d{4}-\d{2}-\d{2}T/)
   from?: string;
 
   @IsOptional()
   @IsDateString()
+  @Matches(/^\d{4}-\d{2}-\d{2}T/)
   to?: string;
 }

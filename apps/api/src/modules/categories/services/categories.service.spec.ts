@@ -126,18 +126,19 @@ describe('CategoriesService', () => {
   });
 
   describe('remove', () => {
-    it('deletes the category', async () => {
-      const category = makeCategory();
-      categoryRepo.findOneBy.mockResolvedValue(category);
+    it('deletes the category atomically by id and userId', async () => {
       categoryRepo.delete.mockResolvedValue({ affected: 1, raw: [] });
 
       await service.remove('user-id', 'cat-id');
 
-      expect(categoryRepo.delete).toHaveBeenCalledWith('cat-id');
+      expect(categoryRepo.delete).toHaveBeenCalledWith({
+        id: 'cat-id',
+        userId: 'user-id',
+      });
     });
 
     it('throws NotFoundException when category not found', async () => {
-      categoryRepo.findOneBy.mockResolvedValue(null);
+      categoryRepo.delete.mockResolvedValue({ affected: 0, raw: [] });
 
       await expect(service.remove('user-id', 'cat-id')).rejects.toThrow(
         NotFoundException,

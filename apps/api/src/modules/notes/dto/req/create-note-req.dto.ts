@@ -1,4 +1,10 @@
-import { IsOptional, IsString, IsUUID, MinLength } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsUUID,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class CreateNoteReqDto {
   @IsUUID()
@@ -6,6 +12,7 @@ export class CreateNoteReqDto {
 
   @IsString()
   @MinLength(1)
+  @MaxLength(255)
   title!: string;
 
   @IsOptional()
@@ -14,9 +21,9 @@ export class CreateNoteReqDto {
 
   @IsOptional()
   @IsUUID()
-  taskId?: string;
+  taskId?: string | null;
 
   @IsOptional()
   @IsUUID()
-  financeEntryId?: string;
+  financeEntryId?: string | null;
 }

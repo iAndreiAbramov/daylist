@@ -43,6 +43,10 @@ export class AuthService {
   }
 
   async register(dto: RegisterReqDto): Promise<ITokenPairResponse> {
+    // Hash is computed before the email lookup intentionally: ensures both
+    // "email taken" and "email free" paths take the same amount of time,
+    // preventing user enumeration via timing differences.
+    const passwordHash = await bcrypt.hash(dto.password, 10);
     const existing = await this.userRepo.findOneBy({ email: dto.email });
     if (existing) {
       this.logger.error(
@@ -53,7 +57,6 @@ export class AuthService {
       return this.generateFakeTokenPair();
     }
 
-    const passwordHash = await bcrypt.hash(dto.password, 10);
     const user = this.userRepo.create({ email: dto.email, passwordHash });
     await this.userRepo.save(user);
 

@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -244,6 +245,15 @@ describe('FinanceAnalyticsService', () => {
       expect(result.previousPeriod?.expense).toBe(200);
       expect(result.previousPeriod?.balance).toBe(600);
       expect(result.previousPeriod?.savingsRate).toBe(75);
+    });
+
+    it('throws BadRequestException when from is after to', async () => {
+      await expect(
+        service.getAnalytics('user-id', {
+          from: '2024-01-31',
+          to: '2024-01-01',
+        }),
+      ).rejects.toThrow(BadRequestException);
     });
 
     it('previousPeriod is null when no date range provided', async () => {
