@@ -14,6 +14,9 @@ import { RefreshToken } from '@typeorm/entities/refresh-token.entity';
 import { User } from '@typeorm/entities/user.entity';
 import type { RegisterReqDto } from '../dto/req/register-req.dto';
 
+const MS_PER_SECOND = 1000;
+const FAKE_TOKEN_TTL_SECONDS = 900; // 15 minutes
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -40,6 +43,10 @@ export class AuthService {
   }
 
   async register(dto: RegisterReqDto): Promise<ITokenPairResponse> {
+    // Hash is computed before the email lookup intentionally: ensures both
+    // "email taken" and "email free" paths take the same amount of time,
+    // preventing user enumeration via timing differences.
+    const passwordHash = await bcrypt.hash(dto.password, 10);
     const existing = await this.userRepo.findOneBy({ email: dto.email });
     if (existing) {
       this.logger.error(
@@ -50,7 +57,6 @@ export class AuthService {
       return this.generateFakeTokenPair();
     }
 
-    const passwordHash = await bcrypt.hash(dto.password, 10);
     const user = this.userRepo.create({ email: dto.email, passwordHash });
     await this.userRepo.save(user);
 
@@ -127,7 +133,7 @@ export class AuthService {
     const payload = Buffer.from(
       JSON.stringify({
         sub: randomBytes(16).toString('hex'),
-        exp: Math.floor(Date.now() / 1000) + 900,
+        exp: Math.floor(Date.now() / MS_PER_SECOND) + FAKE_TOKEN_TTL_SECONDS,
       }),
     ).toString('base64url');
     const signature = randomBytes(32).toString('base64url');

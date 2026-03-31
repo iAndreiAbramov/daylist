@@ -10,6 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { Throttle } from '@nestjs/throttler';
 import { CurrentUser } from '@lib/decorators/current-user.decorator';
 import { JwtAuthGuard } from '@lib/guards/jwt-auth.guard';
 import { User } from '@typeorm/entities';
@@ -26,6 +27,7 @@ export class AuthController {
 
   @Post('register')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
   @SerializeOptions({ type: TokenPairResDto })
   register(@Body() dto: RegisterReqDto): Promise<TokenPairResDto> {
     return this.authService.register(dto);
@@ -34,6 +36,7 @@ export class AuthController {
   @UseGuards(AuthGuard('local'))
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
   @SerializeOptions({ type: TokenPairResDto })
   login(@Request() req: { user: User }): Promise<TokenPairResDto> {
     return this.authService.login(req.user);
@@ -41,6 +44,7 @@ export class AuthController {
 
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
   @SerializeOptions({ type: TokenPairResDto })
   refresh(@Body() dto: RefreshTokenReqDto): Promise<TokenPairResDto> {
     return this.authService.refresh(dto.refreshToken);
