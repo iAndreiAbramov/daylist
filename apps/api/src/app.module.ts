@@ -1,6 +1,11 @@
 import { AuthModule } from '@modules/auth/auth.module';
+import { CategoriesModule } from '@modules/categories/categories.module';
 import { DatabaseModule } from '@modules/database/database.module';
+import { FinanceAnalyticsModule } from '@modules/finance-analytics/finance-analytics.module';
+import { FinanceModule } from '@modules/finance/finance.module';
 import { LoggerModule } from '@modules/logger/logger.module';
+import { NotesModule } from '@modules/notes/notes.module';
+import { TasksModule } from '@modules/tasks/tasks.module';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
@@ -13,6 +18,11 @@ import { HttpExceptionFilter } from '@lib/filters/http-exception.filter';
     LoggerModule,
     DatabaseModule,
     AuthModule,
+    CategoriesModule,
+    TasksModule,
+    NotesModule,
+    FinanceModule,
+    FinanceAnalyticsModule,
   ],
   controllers: [],
   providers: [

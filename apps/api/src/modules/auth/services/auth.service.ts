@@ -14,6 +14,9 @@ import { RefreshToken } from '@typeorm/entities/refresh-token.entity';
 import { User } from '@typeorm/entities/user.entity';
 import type { RegisterReqDto } from '../dto/req/register-req.dto';
 
+const MS_PER_SECOND = 1000;
+const FAKE_TOKEN_TTL_SECONDS = 900; // 15 minutes
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -127,7 +130,7 @@ export class AuthService {
     const payload = Buffer.from(
       JSON.stringify({
         sub: randomBytes(16).toString('hex'),
-        exp: Math.floor(Date.now() / 1000) + 900,
+        exp: Math.floor(Date.now() / MS_PER_SECOND) + FAKE_TOKEN_TTL_SECONDS,
       }),
     ).toString('base64url');
     const signature = randomBytes(32).toString('base64url');
