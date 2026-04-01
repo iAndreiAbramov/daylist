@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**Daylist** — offline-first personal task manager, notes, and finance tracker. Works without auth in offline mode (data in IndexedDB), syncs to server when user has an account and internet connection.
+**Daylist** — offline-first personal task manager, notes, and finance tracker. Доступно как PWA (Progressive Web App). Works without auth in offline mode (data in IndexedDB), syncs to server when user has an account and internet connection.
 
 ## Commands
 
@@ -70,7 +70,7 @@ pnpm lint          # ESLint with auto-fix
 
 ### App (`apps/app`)
 
-- Vite + React SPA
+- Vite + React SPA, доступно как PWA
 - Tailwind CSS v4 via `@tailwindcss/vite` (installed)
 - Planned: shadcn/ui, Radix UI, Storybook, IndexedDB for offline storage
 

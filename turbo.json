@@ -17,6 +17,13 @@
     "test": {
       "dependsOn": ["^build"],
       "cache": false
+    },
+    "storybook": {
+      "cache": false,
+      "persistent": true
+    },
+    "build-storybook": {
+      "outputs": ["storybook-static/**"]
     }
   }
 }
