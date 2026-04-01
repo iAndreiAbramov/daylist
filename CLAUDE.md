@@ -58,7 +58,7 @@ pnpm lint          # ESLint with auto-fix
 - `apps/landing` — Astro 5 landing page (`daylist.com`, static, `src/pages/`)
 - `apps/app` — Vite + React SPA (`app.daylist.com`)
 - `apps/api` — NestJS 10 backend
-- `packages/common` — shared library `@daylist/common`: TypeScript interfaces for all entities (`IUser`, `ICategory`, `ITask`, `INote`, `IFinanceEntry`)
+- `packages/common` — shared library `@daylist/common`: TypeScript interfaces for all entities (`IUser`, `ICategory`, `ITask`, `INote`, `IFinanceEntry`), enums (`CategoryTypeEnum`, `FinanceEntryTypeEnum`), response interfaces (`ITokenPairResponse`, `IUserResponse`)
 - `specs/` — project specifications
 
 ### Landing (`apps/landing`)
@@ -71,17 +71,23 @@ pnpm lint          # ESLint with auto-fix
 ### App (`apps/app`)
 
 - Vite + React SPA
-- Planned: Tailwind CSS, shadcn/ui, Radix UI, Storybook, IndexedDB for offline storage
+- Tailwind CSS v4 via `@tailwindcss/vite` (installed)
+- Planned: shadcn/ui, Radix UI, Storybook, IndexedDB for offline storage
 
 ### Backend (`apps/api`)
 
 - NestJS with Express, all routes prefixed `/api`, CORS enabled
 - Port: `PORT` env var or 3001
 - PostgreSQL + TypeORM configured (`DatabaseModule`, `synchronize: false`)
-- Entities: `User`, `Category`, `Task`, `Note`, `FinanceEntry` (implement interfaces from `@daylist/common`)
+- Entities: `User`, `Category`, `Task`, `Note`, `FinanceEntry`, `RefreshToken` (first five implement interfaces from `@daylist/common`)
 - Migrations: `apps/api/src/typeorm/migrations/`, data-source: `apps/api/src/typeorm/data-source.ts`
 - `SeedService` seeds mock data (user, categories, tasks, notes, finance entries) on startup when `SEED_ENABLED=true`; idempotent — skips if seed user already exists
-- Config: `apps/api/.env.example`
+- Config files in `src/lib/config/`: `auth.config.ts`, `seed.config.ts`, `logger.config.ts` — each uses `registerAs` + Zod schema for validation at startup
+- Config: `apps/api/.env.example` (vars: `DATABASE_URL`, `JWT_SECRET`, `JWT_ACCESS_EXPIRES_IN`, `JWT_REFRESH_EXPIRES_IN`, `PORT`, `SEED_ENABLED`, `LOG_LEVEL`)
+- Rate limiting via `ThrottlerModule`: 200 req / 60s globally; 5 req / 60s on auth endpoints
+- Global exception filters: `AllExceptionsFilter` (non-HTTP), `HttpExceptionFilter` (HTTP)
+- Logger: `LoggerModule` with `AppConsoleLogger` (CLS-based) and `HttpLoggerInterceptor`; level controlled by `LOG_LEVEL` env var
+- `FinanceEntry.amount` stored as bigint (cents) with entity transformer converting to/from decimal
 
 ### UI requirements
 

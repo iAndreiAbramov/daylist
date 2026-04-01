@@ -81,16 +81,16 @@
 
 **Задачи:**
 
-1. Создать `CategoriesModule`: CRUD `/api/categories` (фильтрация по `type`), проверка владельца
-2. Создать `TasksModule`: CRUD `/api/tasks`, фильтрация по `categoryId` и `parentId`, endpoint для массового обновления
+1. ✅ Создать `CategoriesModule`: CRUD `/api/categories` (фильтрация по `type`), проверка владельца
+2. ✅ Создать `TasksModule`: CRUD `/api/tasks`, фильтрация по `categoryId` и `parentId`, endpoint для массового обновления
    `position`
-3. Создать `NotesModule`: CRUD `/api/notes`, фильтрация по `categoryId`, `taskId`, `financeEntryId`
-4. Создать `FinanceModule`: CRUD `/api/finance/entries`, фильтрация по `categoryId`, диапазону дат, типу
-5. Создать `FinanceAnalyticsModule`: `GET /api/finance/analytics` с параметрами `from`, `to` — возвращает: баланс,
+3. ✅ Создать `NotesModule`: CRUD `/api/notes`, фильтрация по `categoryId`, `taskId`, `financeEntryId`
+4. ✅ Создать `FinanceModule`: CRUD `/api/finance/entries`, фильтрация по `categoryId`, диапазону дат, типу
+5. ✅ Создать `FinanceAnalyticsModule`: `GET /api/finance/analytics` с параметрами `from`, `to` — возвращает: баланс,
    разбивку по категориям, динамику по дням, сравнение с предыдущим периодом, средние значения, топ категорий,
    крупнейшие транзакции, % сбережений
-6. Все контроллеры защищены `JwtAuthGuard`; каждый запрос фильтрует данные по `userId` из токена
-7. Добавить `ValidationPipe` глобально, создать DTO с `class-validator` для каждого модуля
+6. ✅ Все контроллеры защищены `JwtAuthGuard`; каждый запрос фильтрует данные по `userId` из токена
+7. ✅ Добавить `ValidationPipe` глобально, создать DTO с `class-validator` для каждого модуля
 8. Написать unit-тесты для сервисов (моки репозиториев)
 
 ---
