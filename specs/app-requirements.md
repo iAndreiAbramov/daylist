@@ -6,31 +6,28 @@
 
 ### Уровень страницы
 
-Каждая страница — это директория в `src/pages/`. Страницы группируются по типу лэйаута:
+Каждая страница — это директория в `src/pages/`. Все страницы доступны без авторизации (приложение offline-first). Формы входа и регистрации — модалки, доступны только неавторизованным пользователям.
 
-- `src/pages/public/` — страницы для неавторизованного пользователя (публичный лэйаут)
-- `src/pages/protected/` — страницы для авторизованного пользователя (внутренний лэйаут)
-
-Лэйаут группы живёт в поддиректории `_layout/` внутри группы:
+Единый лэйаут `AppLayout` живёт в `src/pages/_layout/`:
 
 ```
 src/pages/
-├── public/
-│   ├── _layout/
-│   │   └── PublicLayout.tsx
-│   ├── LoginPage/
-│   └── RegisterPage/
-└── protected/
-    ├── _layout/
-    │   └── ProtectedLayout.tsx
-    ├── TasksPage/
-    └── ...
+├── _layout/
+│   ├── AppLayout.tsx
+│   ├── navItems.ts
+│   └── components/
+│       ├── Sidebar.tsx
+│       └── TabBar.tsx
+├── TasksPage/
+├── NotesPage/
+├── FinancePage/
+└── ProfilePage/
 ```
 
 Структура страницы:
 
 ```
-src/pages/protected/TasksPage/
+src/pages/TasksPage/
 ├── index.ts              # реэкспорт: export { TasksPage } from './TasksPage'
 ├── TasksPage.tsx         # основной компонент страницы
 ├── components/           # компоненты, специфичные только для этой страницы
