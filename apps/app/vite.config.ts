@@ -21,8 +21,8 @@ export default defineConfig({
         short_name: 'Daylist',
         description:
           'Offline-first personal task manager, notes, and finance tracker',
-        theme_color: '#0a0a0b',
-        background_color: '#0a0a0b',
+        theme_color: '#1e1c19',
+        background_color: '#1e1c19',
         display: 'standalone',
         icons: [
           {
