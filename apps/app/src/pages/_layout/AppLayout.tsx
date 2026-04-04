@@ -7,7 +7,9 @@ import { TabBar } from './components/TabBar';
 export const AppLayout: React.FC = () => {
   return (
     <>
-      <div className={clsx('flex', 'mx-auto h-svh max-w-400', 'bg-background')}>
+      <div
+        className={clsx('flex', 'max-w-content mx-auto h-svh', 'bg-background')}
+      >
         <Sidebar />
         <main className={clsx('flex-1', 'overflow-y-auto pb-16 md:pb-0')}>
           <div className="px-4 py-6 md:px-6">

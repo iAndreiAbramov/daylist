@@ -1,10 +1,9 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "ui": "tui",
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**", "build/**"]
+      "outputs": ["dist/**"]
     },
     "dev": {
       "dependsOn": ["^build"],
@@ -12,17 +11,18 @@
       "persistent": true
     },
     "lint": {
-      "dependsOn": ["^build", "^lint"]
+      "dependsOn": ["^build"]
     },
     "test": {
-      "dependsOn": ["^build"],
-      "cache": false
+      "dependsOn": ["^build"]
     },
     "storybook": {
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     },
     "build-storybook": {
+      "dependsOn": ["^build"],
       "outputs": ["storybook-static/**"]
     }
   }

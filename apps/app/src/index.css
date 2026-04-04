@@ -32,6 +32,8 @@
   --color-ring: #6b6560;
 
   --radius: 0.5rem;
+
+  --max-width-content: 1600px;
 }
 
 body {

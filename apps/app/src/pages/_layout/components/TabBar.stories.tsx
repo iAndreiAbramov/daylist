@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { MemoryRouter } from 'react-router-dom';
+import { AppRoute } from '../../../lib/AppRoute';
 import { TabBar } from './TabBar';
 
 const meta = {
@@ -20,7 +21,7 @@ const router = (path: string): Story['decorators'] => [
   ),
 ];
 
-export const TasksActive: Story = { decorators: router('/tasks') };
-export const NotesActive: Story = { decorators: router('/notes') };
-export const FinanceActive: Story = { decorators: router('/finance') };
-export const ProfileActive: Story = { decorators: router('/profile') };
+export const TasksActive: Story = { decorators: router(AppRoute.Tasks()) };
+export const NotesActive: Story = { decorators: router(AppRoute.Notes()) };
+export const FinanceActive: Story = { decorators: router(AppRoute.Finance()) };
+export const ProfileActive: Story = { decorators: router(AppRoute.Profile()) };
