@@ -81,36 +81,37 @@
 
 **Задачи:**
 
-1. Создать `CategoriesModule`: CRUD `/api/categories` (фильтрация по `type`), проверка владельца
-2. Создать `TasksModule`: CRUD `/api/tasks`, фильтрация по `categoryId` и `parentId`, endpoint для массового обновления
+1. ✅ Создать `CategoriesModule`: CRUD `/api/categories` (фильтрация по `type`), проверка владельца
+2. ✅ Создать `TasksModule`: CRUD `/api/tasks`, фильтрация по `categoryId` и `parentId`, endpoint для массового обновления
    `position`
-3. Создать `NotesModule`: CRUD `/api/notes`, фильтрация по `categoryId`, `taskId`, `financeEntryId`
-4. Создать `FinanceModule`: CRUD `/api/finance/entries`, фильтрация по `categoryId`, диапазону дат, типу
-5. Создать `FinanceAnalyticsModule`: `GET /api/finance/analytics` с параметрами `from`, `to` — возвращает: баланс,
+3. ✅ Создать `NotesModule`: CRUD `/api/notes`, фильтрация по `categoryId`, `taskId`, `financeEntryId`
+4. ✅ Создать `FinanceModule`: CRUD `/api/finance/entries`, фильтрация по `categoryId`, диапазону дат, типу
+5. ✅ Создать `FinanceAnalyticsModule`: `GET /api/finance/analytics` с параметрами `from`, `to` — возвращает: баланс,
    разбивку по категориям, динамику по дням, сравнение с предыдущим периодом, средние значения, топ категорий,
    крупнейшие транзакции, % сбережений
-6. Все контроллеры защищены `JwtAuthGuard`; каждый запрос фильтрует данные по `userId` из токена
-7. Добавить `ValidationPipe` глобально, создать DTO с `class-validator` для каждого модуля
+6. ✅ Все контроллеры защищены `JwtAuthGuard`; каждый запрос фильтрует данные по `userId` из токена
+7. ✅ Добавить `ValidationPipe` глобально, создать DTO с `class-validator` для каждого модуля
 8. Написать unit-тесты для сервисов (моки репозиториев)
 
 ---
 
-## Этап 5. Дизайн-система и layout фронтенда
+## ✅ Этап 5. Дизайн-система и layout фронтенда
 
 Создаём визуальную основу: цветовая схема, компоненты, адаптивная навигация.
 
 **Задачи:**
 
-1. Установить зависимости: `shadcn/ui` (init), `@radix-ui/*`, `clsx`, `tailwind-merge`, `lucide-react`
-2. Определить цветовую палитру в `globals.css` через CSS-переменные Tailwind: нейтральные средние тона (не светлые, не
-   тёмные)
-3. Создать компонент `AppLayout` с адаптивным поведением:
+1. ✅ Установить зависимости: `shadcn/ui` (init через `components.json`), `clsx`, `tailwind-merge`, `lucide-react`,
+   `class-variance-authority`, `react-router-dom`; Vite понижен до v7 для совместимости с Storybook 10
+2. ✅ Определить цветовую палитру в `src/index.css` через `@theme`: тёплые нейтральные тона (stone/charcoal)
+3. ✅ Создать компонент `AppLayout` с адаптивным поведением:
    - `Sidebar` (desktop, 768px+): логотип, навигационные ссылки (Задачи, Заметки, Финансы), ссылка на профиль внизу
-   - `TabBar` (mobile, до 768px): нижняя панель с иконками и подписями
-4. Создать страницы-заглушки: `/tasks`, `/notes`, `/finance`, `/profile`, `/auth/login`, `/auth/register`
-5. Реализовать `AppShell` — обёртка для аутентифицированных страниц; неаутентифицированные редиректятся на `/auth/login`
-6. Настроить Storybook: установить, добавить stories для `Sidebar`, `TabBar`, базовых UI-компонентов
-7. Задать максимальную ширину контента 1600px с центрированием
+   - `TabBar` (mobile, до 768px): нижняя фиксированная панель с иконками и подписями
+4. ✅ Создать страницы-заглушки: `/tasks`, `/notes`, `/finance`, `/profile`, `/auth/login`, `/auth/register`
+5. ✅ Реализовать `AppShell` — обёртка для аутентифицированных страниц; неаутентифицированные редиректятся на
+   `/auth/login` (проверка через `localStorage.getItem('accessToken')`, заменится на Zustand-стор в этапе 6)
+6. ✅ Настроить Storybook 10: добавить stories для `Sidebar` и `TabBar` (4 варианта каждый — активный роут)
+7. ✅ Задать максимальную ширину контента 1600px с центрированием (`mx-auto max-w-[1600px]` в `AppLayout`)
 
 ---
 

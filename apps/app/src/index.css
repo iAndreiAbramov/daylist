@@ -1,1 +1,47 @@
 @import 'tailwindcss';
+
+@theme {
+  /* Warm stone mid-tone palette */
+  --color-background: #1e1c19;
+  --color-foreground: #f0ebe3;
+
+  --color-card: #252320;
+  --color-card-foreground: #f0ebe3;
+
+  --color-sidebar: #171614;
+  --color-sidebar-foreground: #f0ebe3;
+
+  --color-muted: #2d2a26;
+  --color-muted-foreground: #9c9690;
+
+  --color-border: #3c3830;
+  --color-input: #2d2a26;
+
+  --color-primary: #e8ddd0;
+  --color-primary-foreground: #1e1c19;
+
+  --color-secondary: #2d2a26;
+  --color-secondary-foreground: #f0ebe3;
+
+  --color-accent: #3c3830;
+  --color-accent-foreground: #f0ebe3;
+
+  --color-destructive: #b91c1c;
+  --color-destructive-foreground: #fef2f2;
+
+  --color-ring: #6b6560;
+
+  --radius: 0.5rem;
+
+  --max-width-content: 1600px;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}

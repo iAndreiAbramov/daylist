@@ -6,7 +6,8 @@
   "printWidth": 80,
   "plugins": [
     "@trivago/prettier-plugin-sort-imports",
-    "prettier-plugin-astro"
+    "prettier-plugin-astro",
+    "prettier-plugin-tailwindcss"
   ],
   "importOrder": [
     "<THIRD_PARTY_MODULES>",
@@ -16,7 +17,7 @@
   ],
   "importOrderSeparation": false,
   "importOrderSortSpecifiers": true,
-  "importOrderParserPlugins": ["typescript", "decorators-legacy"],
+  "importOrderParserPlugins": ["typescript", "jsx", "decorators-legacy"],
   "overrides": [
     {
       "files": "*.astro",
